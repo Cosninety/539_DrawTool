@@ -1,3 +1,6 @@
+<!-- I referenced the following online course to complete this coding challenge: https://www.udemy.com/javascript-html5-canvas-course/ -->
+<!-- Another potentially useful reference : http://www.williammalone.com/articles/create-html5-canvas-javascript-drawing-app/ -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,32 +8,108 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-  <title>539 Waiver Challenge</title>
+  <title>539_Waiver_Challenge</title>
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-  <link rel="stylesheet" href="css/styles.css">
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
 
 </head>
 <body>
 
-<div class = "row">
-  <div id="header" class="col-md-12">
-    <h1 class ="text-center">Drawing Tool</h1>
-  </div>
+<h1 id="title"></h1>
+<canvas id ="canvasMain" width="400" height ="300"></canvas>
 
-  <div id="mapdiv" class="col-md-8"></div>
+<div>
+  <button class ="save">Save</button>
+  <button class ="clear">Clear</button>
 
-  <div id="footer" class="col-md-12">
-  <h2 class ="text-center">Noah Garcia</h2>
-  </div>
+  <!-- review types and span -->
+  <span>Color<input type ="color" value ="#000000" id="penColor"></span>
+  <span>Width<input type ="range" min="1" max"15" value="5" id="penWidth"></span>
 </div>
 
 <script>
 
+$("#title").text("539_Waiver_Challenge")
+
+// https://stackoverflow.com/questions/5808162/getcontext-is-not-a-function below return canvas element..
+// var canvas = $('#canvasMain')[0];
+// $(canvas).css("width","80%", "height","80%");
+// $(canvas).css("width","80%", "height","80%", "text-align", "center");
+
+var canvas = document.querySelector('#canvasMain')
+
+// what is 2d? what is getContext?
+var contx = canvas.getContext('2d');
+
+// contx.fillRect(10,10,100,200);
+canvas.style.border = '1px solid black'
+var penColor = document.querySelector('#penColor');
+var penWidth = document.querySelector('#penWidth');
+
+document.querySelector('.save').addEventListener("click",saveImage);
+document.querySelector('.clear').addEventListener("click",clearImage);
+
+// mouse tracker
+const mouse = {draw:false, x:0, y:0, lastX:0, lastY:0};
+canvas.addEventListener('mousemove',function(i){
+  mouse.lastX =mouse.x;
+  mouse.lastY=mouse.y;
+  mouse.x = i.x - canvas.offsetLeft;
+  mouse.y = i.y  - canvas.offsetTop;
+  draw('move');
+})
+
+canvas.addEventListener('mouseover',function(){
+  draw('down');
+})
+
+window.addEventListener('keydown', function(e) {
+ console.log(e.keyCode)
+ if (e.keyCode === 40) {
+ return draw('down');
+ }
+
+ if (e.keyCode === 38) {
+ return draw('up');
+}
+});
+
+// console.log('test')
+
+canvas.addEventListener('mouseout',function(){
+  draw('up');
+})
+//
+function draw(val){
+  if(val === 'up'){
+    mouse.draw=false;
+  }
+  if(val === 'down'){
+    mouse.draw=true;
+  }
+  if(mouse.draw){
+    console.log('drawing');
+    contx.beginPath();
+    contx.moveTo(mouse.lastX,mouse.lastY);
+    contx.lineTo(mouse.x,mouse.y);
+    contx.strokeStyle= penColor.value;
+    contx.lineWidth = penWidth.value;
+    contx.stroke();
+    contx.closePath();
+  }
+}
+
+
+function saveImage(){
+}
+function clearImage(){
+}
+
+
 </script>
+
 
 
 </body>
